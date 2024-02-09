@@ -73,7 +73,8 @@ void invokeGeneralT5LayerNorm(T*           out,
     block.x = block.x / (4 / sizeof(T));  // if using half, only need half of block.x
 
     /* should pay attention to the rsqrt precision*/
-    generalT5LayerNorm<T><<<grid, block>>>(input, gamma, out, layernorm_eps, m, n);  // For gpt-3
+    const cudaStream_t stream = at::cuda::getCurrentCUDAStream();
+    generalT5LayerNorm<T><<<grid, block, 0, stream>>>(input, gamma, out, layernorm_eps, m, n);  // For gpt-3
 }
 
 template void invokeGeneralT5LayerNorm(half*           out,
