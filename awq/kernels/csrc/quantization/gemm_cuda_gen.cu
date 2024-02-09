@@ -279,14 +279,15 @@ torch::Tensor gemm_forward_cuda(
     // threadIdx.x: 32
     // threadIdx.y: i_factors[2] * j_factors[2]
     dim3 threads_per_block(32, 4);
+    const cudaStream_t stream = at::cuda::getCurrentCUDAStream();
     if (group_size == 128)
     {
-      gemm_forward_4bit_cuda_m128n64k32<128><<<num_blocks, threads_per_block>>>(
+      gemm_forward_4bit_cuda_m128n64k32<128><<<num_blocks, threads_per_block, 0, stream>>>(
         split_k_iters, in_feats, kernel, scaling_factors, zeros, num_in_feats, num_in_channels, num_out_channels, out_feats);
     }
     else if (group_size == 64)
     {
-      gemm_forward_4bit_cuda_m128n64k32<64><<<num_blocks, threads_per_block>>>(
+      gemm_forward_4bit_cuda_m128n64k32<64><<<num_blocks, threads_per_block, 0, stream>>>(
         split_k_iters, in_feats, kernel, scaling_factors, zeros, num_in_feats, num_in_channels, num_out_channels, out_feats);
     }
     else

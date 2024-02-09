@@ -22,6 +22,7 @@
 #include <assert.h>
 #include <float.h>
 #include <type_traits>
+#include <c10/cuda/CUDAGuard.h>
 
 #include "decoder_masked_multihead_attention_template.hpp"
 
@@ -35,6 +36,7 @@
         cudaFuncSetAttribute(kernel, cudaFuncAttributeMaxDynamicSharedMemorySize, smem_sz);                            \
     }                                                                                                                  \
     dim3 grid(params.num_heads, params.batch_size);                                                                    \
+    const cudaStream_t stream = at::cuda::getCurrentCUDAStream();                                                      \
     kernel<<<grid, THDS_PER_BLOCK, smem_sz, stream>>>(params)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <torch/extension.h>
 #include "gemv_cuda.h"
+#include <c10/cuda/CUDAGuard.h>
 #define VECTORIZE_FACTOR 8
 #define Q_VECTORIZE_FACTOR 8
 #define PACK_FACTOR 8
